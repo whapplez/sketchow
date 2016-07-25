@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Sketch Overwatch</title>
+		<link rel="stylesheet" type="text/css" href="css.css">
+		<script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	</head>
+	<body>
+		<canvas id= "myCanvas" width="500" height="400" style="border:1px solid #c3c3c3; background-color:#ffffff"></canvas>
+		<script type="text/javascript">
+
+			var canvas = document.getElementById("myCanvas");
+			var ctx = canvas.getContext("2d");
+			var isDrawing = false;
+			var xCoords = new Array();
+			var yCoords = new Array();
+			var clickDrag = new Array();
+
+			function addClick(x, y, dragging)
+			{
+			  xCoords.push(x);
+			  yCoords.push(y);
+			  clickDrag.push(dragging);
+			}
+			function redraw(){
+				  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
+				  
+				  ctx.strokeStyle = "#df4b26";
+				  ctx.lineJoin = "round";
+				  ctx.lineWidth = 5;
+							
+				  for(var i=0; i < xCoords.length; i++) {		
+				    ctx.beginPath();
+				    if(clickDrag[i] && i){
+				      ctx.moveTo(xCoords[i-1], yCoords[i-1]);
+				     }else{
+				       ctx.moveTo(xCoords[i]-1, yCoords[i]);
+				     }
+				   ctx.lineTo(xCoords[i], yCoords[i]);
+				   ctx.closePath();
+				   ctx.stroke();
+				}
+			}
+			$(document).ready(function(){
+				$("#myCanvas").mousedown(function(e){
+					var mouseX = e.pageX - this.offsetLeft;
+  					var mouseY = e.pageY - this.offsetTop;
+					isDrawing = true;
+
+					addClick(mouseX, mouseY);
+					redraw();
+				});
+
+				$("myCanvas").mousemove(function(e){
+					if(isDrawing){
+						addPoint(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+						redraw();
+					}
+				});
+
+				
+				$("#myCanvas").mouseup(function(){
+					isDrawing = false;
+				});
+
+				$("myCanvas").mouseleave(function(){
+					isDrawing = false;
+				});
+
+			});
+		</script>
+	</body>
+</html>
